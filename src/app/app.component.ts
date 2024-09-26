@@ -1,17 +1,19 @@
 import { Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { interval, map } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
-  imports:[]
+  imports: []
 })
 export class AppComponent implements OnInit {
 
   count = signal<number>(0);
   clickCount$ = toObservable(this.count);
+  interval$ = interval(1000);
+  interval = toSignal(this.interval$, { initialValue: 0 })
 
   constructor() {
     effect(() => {
@@ -37,16 +39,16 @@ export class AppComponent implements OnInit {
         console.log(val);
       },
       error: (err) => {
-        throw(err);
+        throw (err);
       },
       complete: () => {
-          console.log("COMPLETED")
+        console.log("COMPLETED")
       },
     })
 
     this.destroyRef.onDestroy(() => {
       subscription.unsubscribe();
-    }) 
+    })
   }
 
   onClick() {
